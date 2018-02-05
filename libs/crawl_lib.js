@@ -30,6 +30,16 @@ let getPosts = (link) => {
     })
 };
 
-
+let getContentPost=(link)=>{
+    return new Promise((resolve)=>{
+        request.get(link,(err,res,body)=>{
+            let $ = cheerio.load(body);
+            let title = $('.title-main').text();
+            let post = $('.pos-bds').text();
+            let price = $('div.dt-price.fl > span.tahomab-gr').text();
+            let acreage = $(' div.dt-price.fl span.tahomab-gr:nth-child(2)').text();
+        })
+    })
+}
 module.exports = {getPosts}
 
