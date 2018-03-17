@@ -1,4 +1,5 @@
-const request = require("request").defaults({jar:true});
+'use strict'
+const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 const async = require("async");
 const _ = require("lodash");
@@ -98,13 +99,13 @@ let getContentPost=(link)=>{
         request.get(link,async ( err,res,body)=>{
             let $ = cheerio.load(body);
             let title = $('.title-main').text();
-            let post = $('.pos-bds').text();
+            let postion = $('.pos-bds').text();
             let price = $('div.dt-price.fl > span.tahomab-gr').text();
             let acreage = $('#lands-lands > div.wrapper-maincontent > div > div.row > div.col-lg-9.col-content-bgs.cf > div.wp-price-s.cf > div.dt-s.fl > span.tahomab-gr').text();
 
             let description = $('.ct-dt-info-des').html();
             let keywords = $('.search-fol-key').text();
-            let img = $('#imageGallery > li > img').attr('src');
+            let img = $('#imageGallery > li.lslide.active > img').attr('src');
             let map_x = $('#map-detail').attr('land-lat');
             let map_y= $('#map-detail').attr('land-lng');
             //detail
@@ -114,10 +115,14 @@ let getContentPost=(link)=>{
                 let detail_val = _.trim($(e).children('.colr-dt-bds').text());
                 details[detail_name]=detail_val;
             });
+            let imgs = [];
+            async.each($('#imageGallery img'),function(e){
+                imgs.push($(e).attr('src'));
+            });
             let data = {
                 _id:details['ma_so'],
                 general:{
-                    title,post,price,acreage,description,keywords,img
+                    title,postion,price,acreage,description,keywords,img,imgs
                 },
                 map:{
                     map_x,map_y
@@ -127,7 +132,7 @@ let getContentPost=(link)=>{
             data =JSON.parse(_.replace(JSON.stringify(data),/\\t|\\n/ig,""));
             add(data,(state,result)=>{
                 if(state){
-                    console.log(result);
+                    console.log(state.general.title + "was added");
                 }
             })
         })

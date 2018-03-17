@@ -5,10 +5,11 @@ const {get} = require('../controllers/c_property');
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
+    
     res.end(await getPosts('https://chobatdongsan.com.vn/nha-dat-ban'));
 });
 router.get('/get',(req,res)=>{
-    get(0,10,(status,results)=>{
+    get(0,20,(status,results)=>{
         if(status){
             res.json(results);
         }

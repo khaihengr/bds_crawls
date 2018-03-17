@@ -7,24 +7,14 @@ let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let mongoose = require("mongoose");
 
-mongoose.Promise = global.Promise;
-let uri = process.env.DB_CON;
-mongoose.connect(uri).then(st=>{
-    if(st){
-        console.log("db is connected, ready to query...")
-    }
-})
 
-//==============mysql============
-// let con = require('./db/conn');
-// con.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected!");
-//     con.query("CREATE DATABASE mydb", function (err, result) {
-//         if (err) throw err;
-//         console.log("Database created");
-//     });
-// });
+// mongoose.Promise = global.Promise;
+// let uri = process.env.DB_CON;
+// mongoose.connect(uri).then(st=>{
+//     if(st){
+//         console.log("db is connected, ready to query...")
+//     }
+// })
 
 let index = require('./routes/index');
 let users = require('./routes/users');
@@ -48,20 +38,20 @@ app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    let err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;
