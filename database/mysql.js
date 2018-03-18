@@ -17,7 +17,7 @@ class Database {
             }
             console.log('MYSQL is connected');            
         })
-        this.close();
+        // this.close();
         
     }
     query( sql, args ) {

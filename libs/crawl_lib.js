@@ -3,8 +3,15 @@ const request = require("request").defaults({ jar: true });
 const cheerio = require("cheerio");
 const async = require("async");
 const _ = require("lodash");
-const {add} = require("../controllers/c_property");
+const { add } = require("../controllers/c_property");
+const moment = require("moment");
+const conn = require('../database/mysql');
+// conn.test_conn();
 
+
+let cities = ['An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh', 'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước', 'Bình Thuận', 'Cà Mau', 'Cao Bằng', 'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Tĩnh', 'Hải Dương', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái', 'Phú Yên', 'Cần Thơ', 'Đà Nẵng', 'Hải Phòng', 'Hà Nội', 'TP HCM'];
+let categories = ['Bán căn hộ chung cư', 'Bán kho, nhà xưởng, đất công nghiệp', 'Bán loại bất động sản khác', 'Bán nhà biệt thự', 'liền kề, phân lô', 'Bán nhà mặt phố', 'Bán nhà riêng', 'Bán sàn văn phòng thương mại', 'Bán trang trại', 'khu nghỉ dưỡng', 'Bán đất', 'Bán đất nền dự án'];
+let units = ['Thỏa thuận', 'Triệu', 'Tỷ', 'Trăm nghìn/m2', 'Triệu/m2'];
 let getPosts = (link) => {
     return new Promise((resolve)=>{
         let option = {
@@ -109,7 +116,28 @@ let getContentPost=(link)=>{
             let map_x = $('#map-detail').attr('land-lat');
             let map_y= $('#map-detail').attr('land-lng');
             //detail
-            let details={};
+            let details = {
+                dia_chi: "",
+                loai_tin_rao: "",
+                ngay_dang_tin: "",
+                ngay_het_han: "",
+                so_tang: "",
+                so_phong_ngu: "",
+                so_toilet: "",
+                ten_lien_lac: "",
+                so_nha_de_xe:"",
+                dien_thoai: "",
+                email: "",
+                huong_nha: "",
+                huong_ban_cong: "",
+                duong_vao: "",
+                mat_tien: "",
+                so_toilet: "",
+                noi_that: "",
+                dien_thoai: "",
+                di_dong: "",
+                
+            };
             async.each($('.tb-dt-bds>.r-dt-bds.cf'),function(e){
                 let detail_name = to_slug($(e).children('.coll-dt-bds.tahoma-gr').text());
                 let detail_val = _.trim($(e).children('.colr-dt-bds').text());
@@ -129,12 +157,46 @@ let getContentPost=(link)=>{
                 },
                 details
             }
-            data =JSON.parse(_.replace(JSON.stringify(data),/\\t|\\n/ig,""));
-            add(data,(state,result)=>{
-                if(state){
-                    console.log(state.general.title + "was added");
-                }
+            let re = new RegExp(/([a-zA-Z][a-zA-Z\sZ_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+)$/, "g");
+            let area = new RegExp(/^(\d+)/, "g").exec(acreage);
+            let place = re.exec(postion);
+            let place_id = cities.indexOf(place) + 1;
+            let project_owner = 1;
+            let form = 1;
+            let category_id = categories.indexOf(details['loai_tin_rao'])+21;
+            let re_u = new RegExp(/\s(.+)$/, "g").exec(price);
+            let price_c = new RegExp(/^(\d+)/, "g").exec(price);
+            let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
+            let address = details['dia_chi'];
+            let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD');
+            let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD');
+            let floor_num = details['so_tang'];
+            let gara_num = details['so_nha_de_xe'];
+            let bed_room_num = details['so_phong_ngu'];
+            let front = details['mat_tien'];
+            let toilet_num = details['so_toilet'];
+            let furniture = details['noi_that'];
+            let house_facing = details['huong_nha'];
+            let from_road = details['duong_vao'];
+            let balcony_facing = details['huong_ban_cong'];
+            let contact_email = details['email'];
+            let contact_name = details['ten_lien_lac'];
+            let contact_phone = details['dien_thoai'];
+            let image = "";
+            if (imgs.length > 0) {
+                for (var i = 0; i < imgs.length; i++)image += imgs[i] + ',';
+            }
+            
+            let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+            conn.query(s_query,[title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num]).then(res => {
+                console.log(res);
             })
+            // data= JSON.parse(_.replace(JSON.stringify(data),/\\t|\\n/ig,""));
+            // add(data,(state,result)=>{
+            //     if(state){
+            //         console.log(state.general.title + "was added");
+            //     }
+            // })
         })
     })
 }

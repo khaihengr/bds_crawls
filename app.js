@@ -6,15 +6,16 @@ let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let mongoose = require("mongoose");
+let con = require("./database/mysql");
 
 
-// mongoose.Promise = global.Promise;
-// let uri = process.env.DB_CON;
-// mongoose.connect(uri).then(st=>{
-//     if(st){
-//         console.log("db is connected, ready to query...")
-//     }
-// })
+mongoose.Promise = global.Promise;
+let uri = process.env.DB_CON;
+mongoose.connect(uri).then(st=>{
+    if(st){
+        console.log("db is connected, ready to query...")
+    }
+})
 
 let index = require('./routes/index');
 let users = require('./routes/users');
@@ -42,7 +43,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-
 // error handler
 app.use(function(err, req, res, next) {
     // set locals, only providing error in development
@@ -53,5 +53,7 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-
+app.listen(3000,() => {
+    console.log("ok")
+})
 module.exports = app;
