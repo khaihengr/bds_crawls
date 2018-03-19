@@ -158,18 +158,24 @@ let getContentPost=(link)=>{
                 details
             }
             let re = new RegExp(/([a-zA-Z][a-zA-Z\sZ_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+)$/, "g");
-            let area = new RegExp(/^(\d+)/, "g").exec(acreage);
-            let place = re.exec(postion);
-            let place_id = cities.indexOf(place) + 1;
+            let area = new RegExp(/^(\d+)/, "g").exec(acreage)[0];
+            if (Number.isNaN(parseInt(area))){
+                area = 0;
+            }
+            let place = (re.exec(postion)[0]).replace(/\t|\s$/gi,"");
+            let place_id = cities.indexOf(place)+1;
             let project_owner = 1;
             let form = 1;
-            let category_id = categories.indexOf(details['loai_tin_rao'])+21;
-            let re_u = new RegExp(/\s(.+)$/, "g").exec(price);
-            let price_c = new RegExp(/^(\d+)/, "g").exec(price);
+            let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
+            let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
+
+            let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
             let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
             let address = details['dia_chi'];
-            let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD');
-            let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD');
+            let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+            let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+            let postion_x = map_x;
+            let postion_y = map_y;
             let floor_num = details['so_tang'];
             let gara_num = details['so_nha_de_xe'];
             let bed_room_num = details['so_phong_ngu'];
@@ -186,11 +192,24 @@ let getContentPost=(link)=>{
             if (imgs.length > 0) {
                 for (var i = 0; i < imgs.length; i++)image += imgs[i] + ',';
             }
-            
-            let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-            conn.query(s_query,[title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num]).then(res => {
-                console.log(res);
+            let u_query = `insert into contact (name,phone,email) values (?,?,?)`;
+            conn.query(u_query, [contact_name, contact_phone, contact_email]).then(res => {
+                // console.log(res)
+                if (res) {
+                    let contact_id = res.insertId;
+                    let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                    conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price]).then(res => {
+                        console.log(res);
+                        
+                    }).catch(e => {
+                        // console.log(e)
+                    })
+                    
+                }
+            }).catch(e => {
+                console.log(e)
             })
+            
             // data= JSON.parse(_.replace(JSON.stringify(data),/\\t|\\n/ig,""));
             // add(data,(state,result)=>{
             //     if(state){
