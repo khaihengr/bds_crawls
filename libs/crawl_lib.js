@@ -197,8 +197,8 @@ let getContentPost=(link)=>{
                 // console.log(res)
                 if (res) {
                     let contact_id = res.insertId;
-                    let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-                    conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price]).then(res => {
+                    let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                    conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road]).then(res => {
                         console.log(res);
                         
                     }).catch(e => {
