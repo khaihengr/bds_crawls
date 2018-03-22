@@ -37,10 +37,13 @@ let getPosts = (link) => {
                 $(this).children('p').children('a').attr('href');
                 getContentPost($(this).children('p').children('a').attr('href'));
             });
+            resolve("ok");
+            // console.log("done!");
             return;
         })
     })
-};let getAllPost = () => {
+};
+let getAllPost = () => {
     return new Promise((resolve)=>{
         for(let i=1;i<=2947;i++){
             let option = {
@@ -210,7 +213,6 @@ let getContentPost=(link)=>{
                         let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                         conn.query(s_query,[ title,project_owner,form,dis_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road]).then(res => {
                             console.log(res);
-                            
                         }).catch(e => {
                             // console.log(e)
                         })
