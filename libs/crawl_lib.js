@@ -162,53 +162,110 @@ let getContentPost=(link)=>{
             if (Number.isNaN(parseInt(area))){
                 area = 0;
             }
-            let place = (re.exec(postion)[0]).replace(/\t|\s$/gi,"");
-            let place_id = cities.indexOf(place)+1;
-            let project_owner = 1;
-            let form = 1;
-            let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
-            let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
-
-            let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
-            let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
-            let address = details['dia_chi'];
-            let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
-            let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
-            let postion_x = map_x;
-            let postion_y = map_y;
-            let floor_num = details['so_tang'];
-            let gara_num = details['so_nha_de_xe'];
-            let bed_room_num = details['so_phong_ngu'];
-            let front = details['mat_tien'];
-            let toilet_num = details['so_toilet'];
-            let furniture = details['noi_that'];
-            let house_facing = details['huong_nha'];
-            let from_road = details['duong_vao'];
-            let balcony_facing = details['huong_ban_cong'];
-            let contact_email = details['email'];
-            let contact_name = details['ten_lien_lac'];
-            let contact_phone = details['dien_thoai'];
-            let image = "";
-            if (imgs.length > 0) {
-                for (var i = 0; i < imgs.length; i++)image += imgs[i] + ',';
-            }
-            let u_query = `insert into contact (name,phone,email) values (?,?,?)`;
-            conn.query(u_query, [contact_name, contact_phone, contact_email]).then(res => {
-                // console.log(res)
-                if (res) {
-                    let contact_id = res.insertId;
-                    let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-                    conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road]).then(res => {
-                        console.log(res);
-                        
-                    }).catch(e => {
-                        // console.log(e)
-                    })
-                    
+            let place = (re.exec(postion)[0]).trim();
+            let place_id = cities.indexOf(place) + 1;
+            let dis_re = new RegExp(/-\s(.+)\s-/, "g");
+            let district = dis_re.exec(postion)[1].trim();
+            district = _.replace(district, /Q. |Tx. |H. /, "");
+            let query_s = `Select _id from place where _parent=${place_id} and value like \"%${district}%\"`;
+            conn.query(query_s).then(res => {
+                let dis_id=0;
+                try {
+                    dis_id= JSON.parse(JSON.stringify(res))[0]._id;
+                } catch (e){
+                    dis_id = place_id;
                 }
+                let project_owner = 1;
+                let form = 1;
+                let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
+                let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
+                let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
+                let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
+                let address = details['dia_chi'];
+                let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+                let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+                let postion_x = map_x;
+                let postion_y = map_y;
+                let floor_num = details['so_tang'];
+                let gara_num = details['so_nha_de_xe'];
+                let bed_room_num = details['so_phong_ngu'];
+                let front = details['mat_tien'];
+                let toilet_num = details['so_toilet'];
+                let furniture = details['noi_that'];
+                let house_facing = details['huong_nha'];
+                let from_road = details['duong_vao'];
+                let balcony_facing = details['huong_ban_cong'];
+                let contact_email = details['email'];
+                let contact_name = details['ten_lien_lac'];
+                let contact_phone = details['dien_thoai'];
+                let image = "";
+                if (imgs.length > 0) {
+                    for (var i = 0; i < imgs.length; i++)image += imgs[i] + ',';
+                }
+                let u_query = `insert into contact (name,phone,email) values (?,?,?)`;
+                conn.query(u_query, [contact_name, contact_phone, contact_email]).then(res => {
+                    // console.log(res)
+                    if (res) {
+                        let contact_id = res.insertId;
+                        let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                        conn.query(s_query,[ title,project_owner,form,dis_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road]).then(res => {
+                            console.log(res);
+                            
+                        }).catch(e => {
+                            // console.log(e)
+                        })
+                        
+                    }
+                }).catch(e => {
+                    console.log(e)
+                })
             }).catch(e => {
-                console.log(e)
+                let project_owner = 1;
+                let form = 1;
+                let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
+                let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
+                let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
+                let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
+                let address = details['dia_chi'];
+                let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+                let expiry_date = moment(details['ngay_het_han'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
+                let postion_x = map_x;
+                let postion_y = map_y;
+                let floor_num = details['so_tang'];
+                let gara_num = details['so_nha_de_xe'];
+                let bed_room_num = details['so_phong_ngu'];
+                let front = details['mat_tien'];
+                let toilet_num = details['so_toilet'];
+                let furniture = details['noi_that'];
+                let house_facing = details['huong_nha'];
+                let from_road = details['duong_vao'];
+                let balcony_facing = details['huong_ban_cong'];
+                let contact_email = details['email'];
+                let contact_name = details['ten_lien_lac'];
+                let contact_phone = details['dien_thoai'];
+                let image = "";
+                if (imgs.length > 0) {
+                    for (var i = 0; i < imgs.length; i++)image += imgs[i] + ',';
+                }
+                let u_query = `insert into contact (name,phone,email) values (?,?,?)`;
+                conn.query(u_query, [contact_name, contact_phone, contact_email]).then(res => {
+                    // console.log(res)
+                    if (res) {
+                        let contact_id = res.insertId;
+                        let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                        conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road]).then(res => {
+                            console.log(res);
+                            
+                        }).catch(e => {
+                            // console.log(e)
+                        })
+                        
+                    }
+                }).catch(e => {
+                    console.log(e)
+                })
             })
+
             
             // data= JSON.parse(_.replace(JSON.stringify(data),/\\t|\\n/ig,""));
             // add(data,(state,result)=>{

@@ -9,13 +9,13 @@ let mongoose = require("mongoose");
 let con = require("./database/mysql");
 
 
-mongoose.Promise = global.Promise;
-let uri = process.env.DB_CON;
-mongoose.connect(uri).then(st=>{
-    if(st){
-        console.log("db is connected, ready to query...")
-    }
-})
+// mongoose.Promise = global.Promise;
+// let uri = process.env.DB_CON;
+// mongoose.connect(uri).then(st=>{
+//     if(st){
+//         console.log("db is connected, ready to query...")
+//     }
+// })
 
 let index = require('./routes/index');
 let users = require('./routes/users');
@@ -53,7 +53,7 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-app.listen(3000,() => {
+app.listen(8000,() => {
     console.log("ok")
 })
 module.exports = app;
