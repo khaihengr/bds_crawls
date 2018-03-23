@@ -5,7 +5,6 @@ const {get} = require('../controllers/c_property');
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    for (let i = 10000; i >=0 ; i--)console.log(i);    
     for (let i =1000; i >=0 ; i--){
         await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i);
     }

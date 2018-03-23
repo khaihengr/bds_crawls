@@ -15,7 +15,7 @@ let units = ['Thỏa thuận', 'Triệu', 'Tỷ', 'Trăm nghìn/m2', 'Triệu/m2
 let getPosts = (link) => {
     return new Promise((resolve)=>{
         let option = {
-            uri:'https://chobatdongsan.com.vn/nha-dat-ban',
+            uri:link,
             header:{
                 'Origin':'https://chobatdongsan.com.vn',
                 'Upgrade-Insecure-Requests':'1',
