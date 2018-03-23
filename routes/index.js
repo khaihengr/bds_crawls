@@ -5,12 +5,9 @@ const {get} = require('../controllers/c_property');
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    for (let i = 0; i <= 47601; i++)console.log(i);
-    await getPosts('https://chobatdongsan.com.vn/nha-dat-ban');
-    
-    for (let i =2; i <= 47601; i++){
-        await getPosts('https://chobatdongsan.com.vn/nha-dat-ban' + '/p' + i);
-        console.log('https://chobatdongsan.com.vn/nha-dat-ban' + '/p' + i);
+    for (let i = 10000; i >=0 ; i--)console.log(i);    
+    for (let i =1000; i >=0 ; i--){
+        await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i);
     }
     res.end("Geting");
 });

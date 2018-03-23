@@ -179,7 +179,7 @@ let getContentPost=(link)=>{
                     dis_id = place_id;
                 }
                 let project_owner = 1;
-                let form = 1;
+                let form = 2;
                 let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
                 let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
                 let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
