@@ -4,10 +4,21 @@ const {getPosts,getAllPost} = require("../libs/crawl_lib");
 const {get} = require('../controllers/c_property');
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-    for (let i =1000; i >=0 ; i--){
-        await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i);
-    }
+router.get('/lease', async function (req, res, next) {
+    setInterval(async function() {
+        for (let i =10; i >=0 ; i--){
+            await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i,2);
+        }
+    },86400000);
+    res.end("Geting");
+});
+
+router.get('/sale', async function (req, res, next) {
+    setInterval(async function () {
+        for (let i = 10; i >= 0; i--) {
+            await getPosts('https://chobatdongsan.com.vn/nha-dat-ban/p' + i, 1);
+        }
+    }, 86400000);
     res.end("Geting");
 });
 router.get('/get',(req,res)=>{
