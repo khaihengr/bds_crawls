@@ -8,7 +8,7 @@ const {get} = require('../controllers/c_property');
 router.get('/lease', async function (req, res, next) {
     let lease_interval = setInterval(async function () {
         for (let i = 10; i >= 0; i--) {
-            await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
+            await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
         }
     }, 28800000);
     if (req.query.rule&&req.query.rule === "manual") {
@@ -16,11 +16,11 @@ router.get('/lease', async function (req, res, next) {
             clearInterval(lease_interval);
             console.log("CLEAR")
             for (let i = 10; i >= 0; i--) {
-                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
             }
         }catch(err){
             for (let i = 10; i >= 0; i--) {
-                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
             }
         }
     }

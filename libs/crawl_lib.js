@@ -160,14 +160,30 @@ let getContentPost=(link,form_set)=>{
                 details
             }
             let re = new RegExp(/([a-zA-Z][a-zA-Z\sZ_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+)$/, "g");
-            let area = new RegExp(/^(\d+)/, "g").exec(acreage)[0];
+            let area;
+            try {
+                area = new RegExp(/^(\d+)/, "g").exec(acreage)[0];
+
+            } catch (e) {
+                console.log(acreage);
+            }
+            
+            
             if (Number.isNaN(parseInt(area))){
                 area = 0;
             }
-            let place = (re.exec(postion)[0]).trim();
+            let place;
+            try {
+                place = (re.exec(postion)[0]).trim();   
+            } catch (e) {
+                
+            }
             let place_id = cities.indexOf(place) + 1;
             let dis_re = new RegExp(/-\s(.+)\s-/, "g");
-            let district = dis_re.exec(postion)[1].trim();
+            let district;
+            try {
+                district= dis_re.exec(postion)[1].trim();
+            }catch(e){}
             district = _.replace(district, /Q. |Tx. |H. /, "");
             let check_query = `select * from sale_lease_post where title LIKE '${title}'`;
             //check row existed in db
@@ -230,8 +246,15 @@ let getContentPost=(link,form_set)=>{
                         let project_owner = 1;
                         let form = form_set;
                         let category_id = categories.indexOf(details['loai_tin_rao']) + 21;
-                        let re_u = new RegExp(/\s(.+)$/, "g").exec(price)[1];
-                        let price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
+                            let re_u;
+                        try {
+                            re_u= new RegExp(/\s(.+)$/, "g").exec(price)[1];
+                        } catch (e) { }
+                        let price_c;
+                        try {
+                            price_c = new RegExp(/^(\d+)/, "g").exec(price)[0];
+                        }catch(e){}
+                        console.log(price_c);
                         let unit = units.indexOf(re_u) != -1 ? units.indexOf(re_u) : 0;
                         let address = details['dia_chi'];
                         let created_date = moment(details['ngay_dang_tin'], "DD/MM/YYYY").format('YYYY-MM-DD h:mm:ss');
@@ -263,6 +286,7 @@ let getContentPost=(link,form_set)=>{
                                 let s_query = `insert into sale_lease_post (title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road,status) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
                                 conn.query(s_query,[ title,project_owner,form,place_id,category_id,area,image,unit,address,description,front,house_facing,balcony_facing,floor_num,bed_room_num,furniture,toilet_num,gara_num,postion_x,postion_y,contact_id,price,created_date,expiry_date,from_road,status]).then(res => {
                                     console.log("A post was added");
+                                    console.log(res);
                                     
                                 }).catch(e => {
                                     // console.log(e)
