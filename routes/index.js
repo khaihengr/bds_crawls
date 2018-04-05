@@ -4,21 +4,49 @@ const {getPosts,getAllPost} = require("../libs/crawl_lib");
 const {get} = require('../controllers/c_property');
 
 /* GET home page. */
+// rule=menual | rule = auto
 router.get('/lease', async function (req, res, next) {
-    setInterval(async function() {
-        for (let i =10; i >=0 ; i--){
-            await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i,2);
+    let lease_interval = setInterval(async function () {
+        for (let i = 10; i >= 0; i--) {
+            await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
         }
-    },86400000);
+    }, 28800000);
+    if (req.query.rule&&req.query.rule === "manual") {
+        try {
+            clearInterval(lease_interval);
+            console.log("CLEAR")
+            for (let i = 10; i >= 0; i--) {
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
+            }
+        }catch(err){
+            for (let i = 10; i >= 0; i--) {
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 1);
+            }
+        }
+    }
     res.end("Geting");
 });
 
 router.get('/sale', async function (req, res, next) {
-    setInterval(async function () {
+    let sale_interval = setInterval(async function () {
         for (let i = 10; i >= 0; i--) {
             await getPosts('https://chobatdongsan.com.vn/nha-dat-ban/p' + i, 1);
         }
-    }, 86400000);
+    }, 28800000);
+    
+    if (req.query.rule&&req.query.rule === "manual") {
+        try {
+            clearInterval(sale_interval);
+            console.log("CLEAR")
+            for (let i = 10; i >= 0; i--) {
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-ban/p' + i, 1);
+            }
+        }catch(err){
+            for (let i = 10; i >= 0; i--) {
+                await getPosts('https://chobatdongsan.com.vn/nha-dat-ban/p' + i, 1);
+            }
+        }
+    }
     res.end("Geting");
 });
 router.get('/get',(req,res)=>{
