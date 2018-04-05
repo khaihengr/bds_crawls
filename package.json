@@ -9,6 +9,7 @@
         "async": "^2.6.0",
         "body-parser": "~1.18.2",
         "cheerio": "^1.0.0-rc.2",
+        "combined-stream": "^1.0.6",
         "cookie-parser": "~1.4.3",
         "debug": "~2.6.9",
         "dotenv": "^5.0.0",
@@ -22,6 +23,7 @@
         "morgan": "~1.9.0",
         "mysql": "^2.15.0",
         "request": "^2.85.0",
-        "serve-favicon": "~2.4.5"
+        "serve-favicon": "~2.4.5",
+        "sshpk": "^1.14.1"
     }
 }
