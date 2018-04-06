@@ -6,6 +6,8 @@ const {get} = require('../controllers/c_property');
 /* GET home page. */
 // rule=menual | rule = auto
 router.get('/lease', async function (req, res, next) {
+    res.status(200).send('data is getting');
+    
     let lease_interval = setInterval(async function () {
         for (let i = 10; i >= 0; i--) {
             await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
@@ -18,16 +20,17 @@ router.get('/lease', async function (req, res, next) {
             for (let i = 10; i >= 0; i--) {
                 await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
             }
+            
         }catch(err){
             for (let i = 10; i >= 0; i--) {
                 await getPosts('https://chobatdongsan.com.vn/nha-dat-cho-thue/p' + i, 2);
             }
         }
     }
-    res.end("Geting");
 });
 
 router.get('/sale', async function (req, res, next) {
+    res.status(200).send('data is getting');
     let sale_interval = setInterval(async function () {
         for (let i = 10; i >= 0; i--) {
             await getPosts('https://chobatdongsan.com.vn/nha-dat-ban/p' + i, 1);
@@ -47,7 +50,6 @@ router.get('/sale', async function (req, res, next) {
             }
         }
     }
-    res.end("Geting");
 });
 router.get('/get',(req,res)=>{
     get(0,20,(status,results)=>{
@@ -55,9 +57,6 @@ router.get('/get',(req,res)=>{
             res.json(results);
         }
     })
-})
-router.get('/getall',(req,res)=>{
-    getAllPost();
 })
 
 module.exports = router;
